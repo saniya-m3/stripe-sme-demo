@@ -11,38 +11,47 @@ interface ResponseCardProps {
 const modeConfig = {
   RESOLVE: {
     badge: "RESOLVE",
-    badgeClass: "bg-green-500/15 text-green-400 ring-1 ring-green-500/30",
-    borderClass: "border-green-500/40",
-    accentClass: "text-green-400",
-    label: "Answer",
+    badgeClass: "bg-[#9EEB47]/20 text-[#2D5A0B] ring-1 ring-[#9EEB47]/50",
+    borderClass: "border-[#9EEB47]/40",
+    topBar: "bg-[#9EEB47]",
+    accentClass: "text-[#2D5A0B]",
+    label: "Answer found",
   },
   CLARIFY: {
     badge: "CLARIFY",
-    badgeClass: "bg-amber-500/15 text-amber-400 ring-1 ring-amber-500/30",
-    borderClass: "border-amber-500/40",
-    accentClass: "text-amber-400",
-    label: "Follow-up needed",
+    badgeClass: "bg-[#BCCEFB]/40 text-[#1A3A7A] ring-1 ring-[#BCCEFB]/70",
+    borderClass: "border-[#BCCEFB]/60",
+    topBar: "bg-[#BCCEFB]",
+    accentClass: "text-[#1A3A7A]",
+    label: "More context needed",
   },
   ESCALATE: {
     badge: "ESCALATE",
-    badgeClass: "bg-red-500/15 text-red-400 ring-1 ring-red-500/30",
-    borderClass: "border-red-500/40",
-    accentClass: "text-red-400",
-    label: "Needs human judgment",
+    badgeClass: "bg-[#F59794]/20 text-[#7A1F1F] ring-1 ring-[#F59794]/40",
+    borderClass: "border-[#F59794]/40",
+    topBar: "bg-[#F59794]",
+    accentClass: "text-[#7A1F1F]",
+    label: "Human judgment required",
   },
 } as const;
 
 function LoadingSkeleton() {
   return (
-    <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-6 animate-pulse space-y-4">
-      <div className="flex items-center gap-3">
-        <div className="h-5 w-20 rounded-full bg-zinc-800" />
-        <div className="h-4 w-32 rounded bg-zinc-800" />
+    <div className="rounded-lg border border-[#E5E3F5] bg-white p-5">
+      <div className="flex items-center gap-2.5 mb-5">
+        <span className="relative flex h-2 w-2">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C6BEEE] opacity-75" />
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-[#B5ACEC]" />
+        </span>
+        <span className="text-[11px] font-mono tracking-widest uppercase text-[#9B96C4]">
+          Analyzing agreement…
+        </span>
       </div>
-      <div className="space-y-2">
-        <div className="h-4 w-full rounded bg-zinc-800" />
-        <div className="h-4 w-5/6 rounded bg-zinc-800" />
-        <div className="h-4 w-4/6 rounded bg-zinc-800" />
+      <div className="space-y-2 animate-pulse">
+        <div className="h-3 w-full rounded bg-[#F0EEF9]" />
+        <div className="h-3 w-11/12 rounded bg-[#F0EEF9]" />
+        <div className="h-3 w-4/5 rounded bg-[#F0EEF9]" />
+        <div className="h-3 w-2/3 rounded bg-[#F0EEF9]" />
       </div>
     </div>
   );
@@ -53,13 +62,16 @@ export default function ResponseCard({ response, error, loading }: ResponseCardP
 
   if (error) {
     return (
-      <div className="rounded-lg border border-red-500/40 bg-zinc-900 p-6">
-        <div className="flex items-center gap-2 mb-3">
-          <span className="rounded-full px-2.5 py-0.5 text-xs font-mono font-semibold bg-red-500/15 text-red-400 ring-1 ring-red-500/30">
-            ERROR
-          </span>
+      <div className="rounded-lg border border-[#F59794]/40 bg-white overflow-hidden">
+        <div className="h-0.5 bg-[#F59794]" />
+        <div className="p-5">
+          <div className="flex items-center gap-2 mb-2.5">
+            <span className="rounded px-2 py-0.5 text-[11px] font-mono font-semibold uppercase tracking-wider bg-[#F59794]/20 text-[#7A1F1F] ring-1 ring-[#F59794]/40">
+              ERROR
+            </span>
+          </div>
+          <p className="text-sm text-[#3A3A3A]">{error}</p>
         </div>
-        <p className="text-sm text-zinc-300">{error}</p>
       </div>
     );
   }
@@ -69,75 +81,85 @@ export default function ResponseCard({ response, error, loading }: ResponseCardP
   const config = modeConfig[response.mode];
 
   return (
-    <div className={`rounded-lg border ${config.borderClass} bg-zinc-900 p-6 space-y-5`}>
-      {/* Badge */}
-      <div className="flex items-center gap-3">
-        <span className={`rounded-full px-2.5 py-0.5 text-xs font-mono font-semibold ${config.badgeClass}`}>
-          {config.badge}
-        </span>
-        <span className={`text-xs font-medium ${config.accentClass}`}>{config.label}</span>
+    <div className={`rounded-lg border ${config.borderClass} bg-white overflow-hidden`}>
+      {/* Colored top accent bar */}
+      <div className={`h-0.5 ${config.topBar}`} />
+
+      <div className="p-5 space-y-4">
+        {/* Badge row */}
+        <div className="flex items-center gap-2.5">
+          <span
+            className={`rounded px-2 py-0.5 text-[11px] font-mono font-semibold uppercase tracking-wider ${config.badgeClass}`}
+          >
+            {config.badge}
+          </span>
+          <span className={`text-xs font-medium ${config.accentClass}`}>{config.label}</span>
+        </div>
+
+        {/* RESOLVE */}
+        {response.mode === "RESOLVE" && (
+          <>
+            <p className="text-sm leading-relaxed text-[#1A1A1A]">{response.answer}</p>
+            {response.citation && (
+              <div className="rounded border border-[#9EEB47]/30 bg-[#F5FDE8] overflow-hidden">
+                <div className="flex items-center gap-1.5 border-b border-[#9EEB47]/20 bg-[#EDFAC4]/60 px-3 py-1.5">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#9EEB47]" />
+                  <p className="text-[10px] font-mono font-semibold uppercase tracking-widest text-[#2D5A0B]">
+                    Source clause
+                  </p>
+                </div>
+                <p className="font-mono text-xs leading-relaxed text-[#3A3A3A] px-3 py-3">
+                  {response.citation}
+                </p>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* CLARIFY */}
+        {response.mode === "CLARIFY" && (
+          <div className="space-y-3">
+            <p className="text-sm leading-relaxed text-[#1A1A1A]">{response.answer}</p>
+            {response.citation && (
+              <div className="flex gap-2.5 rounded border border-[#BCCEFB]/60 bg-[#EEF4FF] p-3">
+                <span className="mt-0.5 shrink-0 text-[#1A3A7A]">
+                  <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 3.5a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3A.75.75 0 0 1 8 4.5zm0 7a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
+                  </svg>
+                </span>
+                <p className="text-xs leading-relaxed text-[#3A3A3A]">
+                  <span className="font-semibold text-[#1A3A7A]">Why I&apos;m asking: </span>
+                  {response.citation}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ESCALATE */}
+        {response.mode === "ESCALATE" && (
+          <div className="space-y-3">
+            <p className="text-sm leading-relaxed text-[#1A1A1A]">{response.answer}</p>
+            {response.strategies && response.strategies.length > 0 && (
+              <div>
+                <p className="text-[10px] font-mono font-semibold uppercase tracking-widest text-[#7A1F1F] mb-2">
+                  Handling strategies
+                </p>
+                <ul className="space-y-1.5">
+                  {response.strategies.map((s, i) => (
+                    <li key={i} className="flex gap-3 rounded border border-[#F59794]/25 bg-[#FFF4F4] px-3 py-2.5">
+                      <span className="shrink-0 font-mono text-[11px] font-bold text-[#C05050] mt-0.5">
+                        {i + 1}.
+                      </span>
+                      <span className="text-xs leading-relaxed text-[#3A3A3A]">{s}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
       </div>
-
-      {/* RESOLVE */}
-      {response.mode === "RESOLVE" && (
-        <>
-          <p className="text-sm leading-relaxed text-zinc-200">{response.answer}</p>
-          {response.citation && (
-            <div className="rounded-md border border-zinc-700 bg-zinc-950 p-4">
-              <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-green-400">
-                Source clause
-              </p>
-              <p className="font-mono text-xs leading-relaxed text-zinc-400">
-                {response.citation}
-              </p>
-            </div>
-          )}
-        </>
-      )}
-
-      {/* CLARIFY */}
-      {response.mode === "CLARIFY" && (
-        <div className="space-y-4">
-          <p className="text-sm leading-relaxed text-zinc-200">{response.answer}</p>
-          {response.citation && (
-            <div className="flex gap-2 rounded-md border border-amber-500/20 bg-amber-500/5 p-3">
-              <span className="mt-0.5 shrink-0 text-amber-400">
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-                  <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 3.5a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3A.75.75 0 0 1 8 4.5zm0 7a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
-                </svg>
-              </span>
-              <p className="text-xs leading-relaxed text-amber-300/80">
-                <span className="font-semibold text-amber-400">Why I&apos;m asking: </span>
-                {response.citation}
-              </p>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ESCALATE */}
-      {response.mode === "ESCALATE" && (
-        <div className="space-y-4">
-          <p className="text-sm leading-relaxed text-zinc-200">{response.answer}</p>
-          {response.strategies && response.strategies.length > 0 && (
-            <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-widest text-red-400">
-                Suggested strategies
-              </p>
-              <ul className="space-y-2">
-                {response.strategies.map((s, i) => (
-                  <li key={i} className="flex gap-3 rounded-md bg-zinc-800/60 px-3 py-2.5">
-                    <span className="shrink-0 font-mono text-xs font-bold text-red-400/70 mt-0.5">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span className="text-xs leading-relaxed text-zinc-300">{s}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
 }

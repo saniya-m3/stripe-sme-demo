@@ -63,28 +63,28 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100">
-      <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6">
+    <div className="min-h-screen bg-[#FAFAF8] text-[#1A1A1A]">
+      <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
 
         {/* Header */}
-        <header className="mb-10">
-          <div className="mb-3 flex items-center gap-2">
-            <span className="rounded px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-widest bg-violet-500/15 text-violet-400 ring-1 ring-violet-500/30">
+        <header className="mb-6 pb-6 border-b border-[#E5E3F5]">
+          <div className="mb-4 flex items-center gap-2">
+            <span className="rounded px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-widest bg-[#C6BEEE]/25 text-[#4A3A9B] ring-1 ring-[#C6BEEE]/60">
               Claude API
             </span>
-            <span className="font-mono text-[10px] text-zinc-500">stripe-sme-demo</span>
+            <span className="font-mono text-[10px] text-[#9B96C4]">stripe-sme-demo</span>
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-50">
+          <h1 className="text-3xl font-semibold tracking-tight text-[#1A1A1A]">
             Stripe SME — Domain Expert API Demo
           </h1>
-          <p className="mt-2 text-sm text-zinc-400">
+          <p className="mt-2 text-sm text-[#6B6B6B]">
             A specialist agent that knows when to answer, when to ask, and when to escalate.
           </p>
         </header>
 
         {/* Example chips */}
-        <div className="mb-5 space-y-2">
-          <p className="text-xs font-medium uppercase tracking-widest text-zinc-500">
+        <div className="mb-4 space-y-2">
+          <p className="text-xs font-medium uppercase tracking-widest text-[#9B96C4]">
             Example questions
           </p>
           <div className="flex flex-wrap gap-2">
@@ -93,7 +93,7 @@ export default function Home() {
                 key={q}
                 onClick={() => handleChip(q)}
                 disabled={loading}
-                className="rounded-full border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-xs text-zinc-300 transition-colors hover:border-violet-500/60 hover:bg-violet-500/10 hover:text-violet-300 disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-full border border-[#E5E3F5] bg-white px-3 py-1.5 text-xs text-[#3A3A3A] transition-colors hover:border-[#C6BEEE] hover:bg-[#C6BEEE]/10 hover:text-[#1A1A1A] disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {q}
               </button>
@@ -102,24 +102,24 @@ export default function Home() {
         </div>
 
         {/* Input area */}
-        <div className="relative mb-6">
+        <div className="relative mb-4">
           <textarea
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
             onKeyDown={handleKeyDown}
-            rows={4}
+            rows={3}
             placeholder="Ask a question about the Stripe Services Agreement…"
-            className="w-full resize-none rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-3 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition-colors focus:border-violet-500/60 focus:ring-1 focus:ring-violet-500/30 disabled:opacity-50"
+            className="w-full resize-none rounded-lg border border-[#E5E3F5] bg-white px-4 py-3 text-sm text-[#1A1A1A] placeholder-[#C5C3CE] outline-none transition-colors focus:border-[#C6BEEE] focus:ring-1 focus:ring-[#C6BEEE]/30 disabled:opacity-50"
             disabled={loading}
           />
           <div className="mt-2 flex items-center justify-between">
-            <span className="text-[11px] text-zinc-600">
+            <span className="text-[11px] text-[#9B96C4]">
               ⌘ + Enter to submit
             </span>
             <button
               onClick={() => handleSubmit()}
               disabled={loading || !question.trim()}
-              className="rounded-md bg-violet-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-violet-500 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-md bg-[#C6BEEE] px-4 py-2 text-sm font-semibold text-[#1A1A1A] transition-colors hover:bg-[#B5ACEC] disabled:cursor-not-allowed disabled:opacity-40"
             >
               {loading ? "Asking…" : "Ask"}
             </button>
@@ -129,11 +129,11 @@ export default function Home() {
         {/* Divider */}
         {hasResult && (
           <div className="mb-6 flex items-center gap-3">
-            <div className="h-px flex-1 bg-zinc-800" />
-            <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-600">
+            <div className="h-px flex-1 bg-[#E5E3F5]" />
+            <span className="text-[10px] font-mono uppercase tracking-widest text-[#B0ADB8]">
               response
             </span>
-            <div className="h-px flex-1 bg-zinc-800" />
+            <div className="h-px flex-1 bg-[#E5E3F5]" />
           </div>
         )}
 
@@ -141,8 +141,8 @@ export default function Home() {
         <ResponseCard response={response} error={error} loading={loading} />
 
         {/* Footer */}
-        <footer className="mt-16 border-t border-zinc-800 pt-6">
-          <p className="text-[11px] text-zinc-600">
+        <footer className="mt-8 border-t border-[#E5E3F5] pt-5">
+          <p className="text-[11px] text-[#9B96C4]">
             Answers are grounded solely in the curated Stripe Services Agreement excerpt.
             This is a developer demo — not legal advice.
           </p>
