@@ -3,7 +3,7 @@
 import type { AskResponse } from "@/app/api/ask/route";
 
 interface ResponseCardProps {
-  response: (AskResponse & { mode: "RESOLVE" | "CLARIFY" | "ESCALATE" }) | null;
+  response: AskResponse | null;
   error: string | null;
   loading: boolean;
 }
@@ -34,6 +34,13 @@ const modeConfig = {
     label: "Human judgment required",
   },
 } as const;
+
+/** Strip markdown bold/italic so raw asterisks never render as literal text. */
+function stripMd(text: string): string {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, "$1")
+    .replace(/\*(.+?)\*/g, "$1");
+}
 
 function LoadingSkeleton() {
   return (
@@ -99,7 +106,7 @@ export default function ResponseCard({ response, error, loading }: ResponseCardP
         {/* RESOLVE */}
         {response.mode === "RESOLVE" && (
           <>
-            <p className="text-sm leading-relaxed text-[#1A1A1A]">{response.answer}</p>
+            <p className="text-sm leading-relaxed text-[#1A1A1A]">{stripMd(response.answer)}</p>
             {response.citation && (
               <div className="rounded border border-[#9EEB47]/30 bg-[#F5FDE8] overflow-hidden">
                 <div className="flex items-center gap-1.5 border-b border-[#9EEB47]/20 bg-[#EDFAC4]/60 px-3 py-1.5">
@@ -109,7 +116,7 @@ export default function ResponseCard({ response, error, loading }: ResponseCardP
                   </p>
                 </div>
                 <p className="font-mono text-xs leading-relaxed text-[#3A3A3A] px-3 py-3">
-                  {response.citation}
+                  {stripMd(response.citation)}
                 </p>
               </div>
             )}
@@ -118,18 +125,40 @@ export default function ResponseCard({ response, error, loading }: ResponseCardP
 
         {/* CLARIFY */}
         {response.mode === "CLARIFY" && (
-          <div className="space-y-3">
-            <p className="text-sm leading-relaxed text-[#1A1A1A]">{response.answer}</p>
-            {response.citation && (
-              <div className="flex gap-2.5 rounded border border-[#BCCEFB]/60 bg-[#EEF4FF] p-3">
-                <span className="mt-0.5 shrink-0 text-[#1A3A7A]">
-                  <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor">
+          <div className="space-y-4">
+            {/* Summary */}
+            <p className="text-sm leading-relaxed text-[#1A1A1A]">{stripMd(response.summary)}</p>
+
+            {/* Questions — most prominent element */}
+            {response.questions.length > 0 && (
+              <ul className="space-y-2">
+                {response.questions.map((q, i) => (
+                  <li
+                    key={i}
+                    className="flex gap-3 rounded-lg border border-[#BCCEFB] bg-[#EEF4FF] px-4 py-3"
+                  >
+                    <span className="shrink-0 font-mono text-xs font-bold text-[#1A3A7A] mt-0.5 select-none">
+                      {response.questions.length > 1 ? `${i + 1}.` : "→"}
+                    </span>
+                    <span className="text-sm font-medium text-[#1A1A1A] leading-snug">
+                      {stripMd(q)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {/* Reasoning — quieter */}
+            {response.reasoning && (
+              <div className="flex gap-2.5 rounded border border-[#BCCEFB]/40 bg-[#F5F8FF] px-3 py-2.5">
+                <span className="mt-0.5 shrink-0 text-[#6B8AC4]">
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
                     <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 3.5a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3A.75.75 0 0 1 8 4.5zm0 7a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
                   </svg>
                 </span>
-                <p className="text-xs leading-relaxed text-[#3A3A3A]">
+                <p className="text-xs leading-relaxed text-[#4A4A4A]">
                   <span className="font-semibold text-[#1A3A7A]">Why I&apos;m asking: </span>
-                  {response.citation}
+                  {stripMd(response.reasoning)}
                 </p>
               </div>
             )}
@@ -139,7 +168,7 @@ export default function ResponseCard({ response, error, loading }: ResponseCardP
         {/* ESCALATE */}
         {response.mode === "ESCALATE" && (
           <div className="space-y-3">
-            <p className="text-sm leading-relaxed text-[#1A1A1A]">{response.answer}</p>
+            <p className="text-sm leading-relaxed text-[#1A1A1A]">{stripMd(response.answer)}</p>
             {response.strategies && response.strategies.length > 0 && (
               <div>
                 <p className="text-[10px] font-mono font-semibold uppercase tracking-widest text-[#7A1F1F] mb-2">
@@ -151,7 +180,7 @@ export default function ResponseCard({ response, error, loading }: ResponseCardP
                       <span className="shrink-0 font-mono text-[11px] font-bold text-[#C05050] mt-0.5">
                         {i + 1}.
                       </span>
-                      <span className="text-xs leading-relaxed text-[#3A3A3A]">{s}</span>
+                      <span className="text-xs leading-relaxed text-[#3A3A3A]">{stripMd(s)}</span>
                     </li>
                   ))}
                 </ul>
