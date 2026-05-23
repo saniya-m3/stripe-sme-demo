@@ -88,7 +88,8 @@ export async function POST(req: NextRequest) {
 
     let parsed: AskResponse;
     try {
-      parsed = JSON.parse(textBlock.text);
+      const raw = textBlock.text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```\s*$/, "").trim();
+      parsed = JSON.parse(raw);
     } catch {
       return NextResponse.json(
         { error: "Model response was not valid JSON.", mode: "ERROR" },
@@ -123,6 +124,7 @@ export async function POST(req: NextRequest) {
         { status: 502 }
       );
     }
+    console.error("[/api/ask] Unexpected error:", err);
     return NextResponse.json(
       { error: "An unexpected error occurred.", mode: "ERROR" },
       { status: 500 }
