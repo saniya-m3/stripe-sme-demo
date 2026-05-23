@@ -68,12 +68,6 @@ export default function Home() {
 
         {/* Header */}
         <header className="mb-6 pb-6 border-b border-[#E5E3F5]">
-          <div className="mb-4 flex items-center gap-2">
-            <span className="rounded px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-widest bg-[#C6BEEE]/25 text-[#4A3A9B] ring-1 ring-[#C6BEEE]/60">
-              Claude API
-            </span>
-            <span className="font-mono text-[10px] text-[#9B96C4]">stripe-sme-demo</span>
-          </div>
           <h1 className="text-3xl font-semibold tracking-tight text-[#1A1A1A]">
             Stripe SME — Domain Expert API Demo
           </h1>
